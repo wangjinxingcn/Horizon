@@ -171,7 +171,13 @@ class AnthropicClient(AIClient):
                 input_tokens=getattr(usage, "input_tokens", 0),
                 output_tokens=getattr(usage, "output_tokens", 0),
             )
-        return message.content[0].text
+        # Reasoning models on Anthropic-compatible endpoints may prepend
+        # thinking blocks; the answer is in the first text block.
+        for block in message.content:
+            text = getattr(block, "text", None)
+            if text:
+                return text
+        return ""
 
 
 class OpenAIClient(AIClient):

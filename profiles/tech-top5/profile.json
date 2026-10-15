@@ -1,0 +1,29 @@
+{
+  "id": "tech-top5",
+  "name": "Engineering Essentials",
+  "display_names": {
+    "zh": "工程干货精选"
+  },
+  "match": "match.md",
+  "analysis": "analysis.md",
+  "content": {
+    "analysis_max_chars": 16000,
+    "enrichment_max_chars": 24000,
+    "sampling": "head-middle-tail"
+  },
+  "enrichment": {
+    "prompt": "enrichment.md",
+    "blocks": [
+      {
+        "id": "solution",
+        "type": "section",
+        "tools": []
+      },
+      {
+        "id": "pitfall",
+        "type": "section",
+        "tools": []
+      }
+    ]
+  }
+}

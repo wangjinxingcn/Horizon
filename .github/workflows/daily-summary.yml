@@ -2,9 +2,9 @@ name: Daily Horizon Summary
 
 on:
   schedule:
-    # GitHub scheduled workflows use UTC. 20:00 UTC is 04:00 Asia/Shanghai;
-    # this intentionally runs early to offset the observed schedule delay.
-    - cron: '0 23 * * *'
+    # 目标：北京时间每周一/三/五 08:00 前出报。
+    # GitHub 定时任务高峰期有延迟，提前 1 小时：UTC 周日/二/四 23:00 = 北京时间周一/三/五 07:00。
+    - cron: '0 23 * * 0,2,4'
   workflow_dispatch:      # Allow manual trigger
 
 jobs:
@@ -35,18 +35,17 @@ jobs:
 
       - name: Run Horizon
         env:
-          # Map secrets to environment variables expected by config.json
-          # Modify these based on your data/config.github.json provider settings
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          LWN_KEY: ${{ secrets.LWN_KEY }}
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-          HORIZON_WEBHOOK_URL: ${{ secrets.HORIZON_WEBHOOK_URL }}
-        run: uv run horizon --hours 24
+        run: |
+          # 按北京时间的星期几选择抓取窗口，与排班无缝衔接并留 1 小时缓冲：
+          # 周一 08:00 覆盖周五 07:00 以来（73h），周三/周五 08:00 各覆盖 49h。
+          DOW=$(TZ='Asia/Shanghai' date +%u)
+          if [ "$DOW" -eq 1 ]; then HOURS=73; else HOURS=49; fi
+          echo "Beijing weekday=$DOW, fetching last $HOURS hours"
+          uv run horizon --hours $HOURS
 
       - name: Set current date as environment variable
-        run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+        run: echo "DATE=$(TZ='Asia/Shanghai' date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
