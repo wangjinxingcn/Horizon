@@ -24,6 +24,15 @@
     }
   },
   "sources": {
+    "hackernews": {
+      "enabled": false
+    },
+    "reddit": {
+      "enabled": false
+    },
+    "telegram": {
+      "enabled": false
+    },
     "rss": [
       {
         "name": "美团技术团队",
