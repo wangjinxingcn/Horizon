@@ -87,9 +87,14 @@ class RSSScraper(BaseScraper):
             # Parse feed
             feed = feedparser.parse(response.text)
 
+            # Some feeds (e.g. tech.meituan.com) omit per-item dates; without
+            # a fallback every entry would be dropped. Use the feed-level
+            # build date so such entries stay datable.
+            feed_date = self._parse_date(feed.feed)
+
             for entry in feed.entries:
                 # Parse published date
-                published_at = self._parse_date(entry)
+                published_at = self._parse_date(entry) or feed_date
                 if not published_at or published_at < since:
                     continue
 

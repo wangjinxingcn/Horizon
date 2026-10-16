@@ -44,7 +44,7 @@
       },
       {
         "name": "LangChain Blog",
-        "url": "https://blog.langchain.com/rss/",
+        "url": "https://www.langchain.com/blog/rss.xml",
         "enabled": true,
         "category": "ai-engineering",
         "profile": "tech-top5",
@@ -55,14 +55,16 @@
         "url": "https://www.infoq.cn/feed",
         "enabled": true,
         "category": "tech-news-cn",
-        "profile": "tech-top5"
+        "profile": "tech-top5",
+        "content_extractor": "trafilatura"
       },
       {
         "name": "InfoQ Architecture",
         "url": "https://feed.infoq.com/architecture/",
         "enabled": true,
         "category": "architecture-en",
-        "profile": "tech-top5"
+        "profile": "tech-top5",
+        "content_extractor": "trafilatura"
       }
     ]
   },
